@@ -1,0 +1,92 @@
+
+<style>
+
+  #modal {
+    padding: 20px;
+    border: 2px solid black;
+    border-radius: 10px;
+    margin: 50px;
+    box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.25);
+    background: white;
+    
+    position: fixed;
+    top: 100px;
+    left: 30px;
+    width: 400px;
+    
+    display: none;
+  }
+  
+  #close {
+    float: right;
+    user-select: none;
+    cursor: pointer;
+  }
+  
+  .proj {
+    cursor: pointer;
+    width: 100px;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px;
+    transition: background 0.25s;
+  }
+  
+  .proj:hover {
+    background: pink;
+  }
+
+</style>
+
+
+<section id="modal">
+  <div id="close">✕</div>
+  <h1>Art Project</h1>
+  <p>
+    This is an art project I made
+  </p>
+</section>
+
+<img id="cd" class="proj" src="cd.gif" alt="cd gif">
+<img id="at" class="proj" src="at.gif" alt="at symbol gif">
+<img id="hour" class="proj" src="hour-glass.gif" alt="hourglass gif">
+<img id="dance" class="proj" src="dancing-girl.gif" alt="dancing girl gif">
+
+<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
+<script>
+  /* global nn */
+  
+  let data
+  
+  async function setup () {
+    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSmFQYcrhKAOqhQeylZmm6nODB5IkQstOmwqdtfsHF7tB6Fekonr7gTKXPNdMGl0Ili78Y3O-3NHWMQ/pub?gid=0&single=true&output=csv'
+    data = await nn.loadData(url)
+    data = nn.parseData(data)
+    console.log(data)
+  }
+    
+  // defining our functions
+  function setupClicks (ele) {
+    ele.on('click', showModal)
+  }
+  
+  function showModal () {
+    const title = data.find(i => i.id === this.id).title
+    const desc = data.find(i => i.id === this.id).description
+    nn.get('#modal > h1').content(title)
+    nn.get('#modal > p').content(desc)
+    nn.get('#modal').css('display', 'block')
+  }
+  
+  function hideModal () {
+    nn.get('#modal').css('display', 'none')
+  }
+  
+  // runs as soon as the page loads
+  // setting up some event listeners
+  nn.get('#close').on('click', hideModal)
+  nn.getAll('.proj').forEach(setupClicks)
+  nn.on('load', setup)
+  
+
+</script>
